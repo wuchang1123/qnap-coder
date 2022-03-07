@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  coder:
+    image: codercom/coder:1.28.2
+    restart: always
+    ports:
+      - 7080:7080
+    volumes:
+      - coder:/var/run/coder
+      - psql_data:/var/lib/postgresql/data
+      - docker_sock:/var/run
+    environment:
+      - SUPER_ADMIN_PASSWORD=az123456~
+      #- DOCKER_PROVIDER_URI=dind:///var/run/docker.sock
+    links: 
+      - dind
+    depends_on:
+      - dind
+  dind:
+    image: docker:dind
+    restart: always
+    privileged: true
+    volumes:
+      - docker_sock:/var/run
+volumes:
+    psql_data: {}
+    coder: {}
+    docker_sock: {}

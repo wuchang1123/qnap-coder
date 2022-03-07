@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  host.docker.internal:
+    image: codercom/coder:1.28.2
+    restart: always
+    ports:
+      - 7080:7080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - coder:/var/run/coder
+      - psql_data:/var/lib/postgresql/data
+    environment:
+      - SUPER_ADMIN_PASSWORD=az123456~
+      - DB_EMBEDDED=""
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=qnapcoder
+      - DB_PASSWORD=coder_!postgres
+      - DB_NAME=qnapcoder
+      - DB_SSL_MODE=disable
+  postgres:
+    image: postgres:14.2
+    restart: on-failure
+    expose:
+      - 5432
+    volumes:
+      - psql_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=qnapcoder
+      - POSTGRES_PASSWORD=coder_!postgres
+volumes:
+    psql_data: {}
+    coder: {}
